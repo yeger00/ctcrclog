@@ -3,8 +3,8 @@ set -x
 
 FLAGS=-DDEBUG
 g++-9 -c -std=c++2a $FLAGS program.cc -O3 -o program.o
-g++-9 -std=c++2a $FLAGS main.cc -O3 program.o -o main
-./main
+g++-9 -std=c++2a $FLAGS main.cc -O3 program.o -o main-debug
+./main-debug
 echo
 
 FLAGS=-DCREATE_MAP
@@ -15,6 +15,9 @@ echo
 
 unset FLAGS
 g++-9 -c -std=c++2a $FLAGS program.cc -O3 -o program.o
-g++-9 -std=c++2a $FLAGS main.cc -O3 program.o -o main
-./main
+g++-9 -std=c++2a $FLAGS main.cc -O3 program.o -o main-release
+strip main-release
+./main-release
 echo
+
+strings main-release | grep -i "error\|system"

@@ -1,3 +1,3 @@
 *.o
-main
+main-*
 crc_to_string
