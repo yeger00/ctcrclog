@@ -21,10 +21,20 @@ struct is_create_map : public std::true_type { };
 struct is_create_map : public std::false_type { };
 #endif
 
+// This class holds the crc to string dict. The reason it is static variable inside a static
+// function is in order to be able to control on the initialization order of static variables.
+// If we use it without it, the compile can choose to init the statid "AddToMap" class before
+// and then the call to the "add_to_map()" function will cause a segmentation fault.
+class CrcToStringMap {
+public:
+        static std::map<uint32_t, std::string>& get_crc_to_string() {
+                static std::map<uint32_t, std::string> crc_to_string;
+                return crc_to_string;
+        }
+};
 
-std::map<uint32_t, std::string> crc_to_string;
-
-
+// The "AddToMap" class is responsible to receive a string message in the C'tor,
+// and adds is to the static "CrcToStringMap".
 template<typename Q=is_create_map>
 class AddToMap {
 public:
@@ -35,7 +45,7 @@ public:
 	template<typename L = Q>
 	typename std::enable_if<L::value>::type
 	add_to_map(const char * str) {
-		crc_to_string[crc32(str)] = std::string(str);
+		CrcToStringMap::get_crc_to_string()[crc32(str)] = std::string(str);
 	}
 	// In release does nothing
 	template<typename L = Q>
@@ -44,7 +54,9 @@ public:
 	}
 };
 
-
+// This is a templated class of message. Each string will have a Message instance
+// that will hold a static "AddToMap" instance for this string. The "AddToMap" 
+// instance will recieve the string as a paramater for the C'tor.
 template<auto T, typename Q=is_debug>
 class Message {
         static constexpr char const* message = T;

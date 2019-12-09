@@ -1,7 +1,8 @@
 #include <iostream>
 #include <map>
+#include "ctcrclog.hpp"
 
-extern std::map<uint32_t, std::string> crc_to_string;
+std::map<uint32_t, std::string>& crc_to_string = CrcToStringMap::get_crc_to_string();
 
 int main() {
 	std::map<uint32_t, std::string>::iterator it;
