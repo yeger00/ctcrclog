@@ -49,7 +49,7 @@ public:
 	// In release does nothing
 	template<typename L = Q>
 	typename std::enable_if<!L::value>::type
-	add_to_map(const char * str) {
+	add_to_map(const char *) {
 	}
 };
 
@@ -60,10 +60,13 @@ template<auto T, typename Q=is_debug>
 class Message {
         static constexpr char const* message = T;
 public:
-        static AddToMap<is_create_map> adder;
+        static AddToMap<is_create_map> adder __attribute__((unused));
         Message() {
 		// Dummy call so it will call the c'tor.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-value"
 		adder;
+#pragma GCC diagnostic pop
 	};
 
 	// In debug will return the message itself.
