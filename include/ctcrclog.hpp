@@ -1,7 +1,6 @@
 #ifndef __CTCRCLOG_HPP__
 #define __CTCRCLOG_HPP__
 
-#include <iostream>
 #include <map>
 #include <type_traits>
 #include "ctfixed_string.hpp"
