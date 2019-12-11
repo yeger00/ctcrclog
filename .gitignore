@@ -1,3 +1,2 @@
 *.o
-main-*
-crc_to_string
+build
